@@ -1,0 +1,9 @@
+[*]
+end_of_line = lf
+insert_final_newline = true
+ident_size = 2
+ident_style = space
+trim_trailing_whitespace = true
+
+[*.md]
+indent_size = 4
