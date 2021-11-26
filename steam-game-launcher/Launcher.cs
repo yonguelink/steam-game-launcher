@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace steam_game_launcher {
   internal static class Launcher {
@@ -19,6 +20,7 @@ namespace steam_game_launcher {
         string steamInstallPath = args[0].Replace('/', '\\');
         string steamGameId = args[1];
 
+        KillSteam();
         StartGame(steamInstallPath, steamGameId);
 
       } catch (Exception err) {
@@ -27,6 +29,15 @@ namespace steam_game_launcher {
         Console.ReadLine();
       }
 
+    }
+
+    private static void KillSteam() {
+      var processes = Process.GetProcesses();
+      var steamProcesses = processes.Where(process => process.ProcessName != "steam-game-launcher" && process.ProcessName.Contains("steam"));
+      steamProcesses.ToList().ForEach(process => {
+        Console.WriteLine($"Killing process {process.ProcessName}");
+        process.Kill();
+      });
     }
 
     private static void StartGame(string steamInstallPath, string steamGameId) {

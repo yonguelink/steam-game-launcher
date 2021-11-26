@@ -32,6 +32,9 @@
 
   <ItemGroup>
     <Compile Include="Launcher.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
 
