@@ -20,7 +20,10 @@ namespace steam_game_launcher {
         string steamInstallPath = args[0].Replace('/', '\\');
         string steamGameId = args[1];
 
-        KillSteam();
+        KillProcesses("steam");
+        StartGame(steamInstallPath, steamGameId);
+        KillProcesses("genshin");
+        KillProcesses("steam");
         StartGame(steamInstallPath, steamGameId);
 
       } catch (Exception err) {
@@ -31,9 +34,9 @@ namespace steam_game_launcher {
 
     }
 
-    private static void KillSteam() {
+    private static void KillProcesses (string name) {
       var processes = Process.GetProcesses();
-      var steamProcesses = processes.Where(process => process.ProcessName != "steam-game-launcher" && process.ProcessName.Contains("steam"));
+      var steamProcesses = processes.Where(process => process.ProcessName != "steam-game-launcher" && process.ProcessName.Contains(name));
       steamProcesses.ToList().ForEach(process => {
         Console.WriteLine($"Killing process {process.ProcessName}");
         process.Kill();
