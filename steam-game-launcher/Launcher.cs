@@ -11,7 +11,7 @@ namespace steam_game_launcher {
             $"Expected 3 arguments, got {args.Length}.\n" +
             "Run like so: steam-game-launcher.exe <steamInstallPath> <steamGameId>\n" +
             "Where: \n" +
-            "\t<steamInstallPath> is the Path to Steam installation Folder (this folder needs to contain the `userdata` folder\n" +
+            "\t<steamInstallPath> is the Path to Steam installation Folder (this folder needs to contain the `userdata` folder)\n" +
             "\t<steamGameId> is the ID steam gave to the game (also works with non-steam game as steam assign the shortcut an ID)\n" +
             "\t<gameName> is (part of) the game's name of the game\n" +
             "NOTE: All Paths can be written with forward slash instead of double-backslash for simplicity"
