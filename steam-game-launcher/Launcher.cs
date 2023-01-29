@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
+using System.IO.Compression;
 
 namespace steam_game_launcher {
   internal static class Launcher {
@@ -38,6 +40,10 @@ namespace steam_game_launcher {
         }
 
         bool runAsAdmin = asAdmin == "true" ? true : false;
+
+        if (gameName == "Monster Hunter Rise") {
+          BackupMhrSaveFiles(steamInstallPath, steamGameId, "116945176", "yonguelink", "G:\\Steam\\steamapps\\common\\MonsterHunterRise\\save-backups");
+        }
 
         KillProcesses(gameName.ToLower());
         KillProcesses("steam");
@@ -108,6 +114,40 @@ namespace steam_game_launcher {
       }
 
       Process.Start(programStartInfo);
+    }
+
+    private static string BackupMhrSaveFiles(string steamInstallPath, string mhrSteamAppId, string steamUserId, string steamUsername, string backupFolderPath) {
+      string mhrSaveFolder = Path.Combine(
+        steamInstallPath,
+        "userdata",
+        steamUserId,
+        mhrSteamAppId,
+        "remote"
+      );
+
+      string backupFolderNowPath = Path.Combine(
+        backupFolderPath,
+        steamUsername,
+        "Monster Hunter Rise"
+      );
+
+      return DirectoryCompress(mhrSaveFolder, backupFolderNowPath);
+    }
+
+    private static string DirectoryCompress (string sourceDirName, string destDirName) {
+      DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+      if (!dir.Exists) {
+        throw new DirectoryNotFoundException(
+          $"Source directory does not exist or could not be found: {sourceDirName}"
+        );
+      }
+
+      Directory.CreateDirectory(destDirName);
+
+      string fileName = $"{Path.Combine(destDirName, DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss"))}.zip";
+      ZipFile.CreateFromDirectory(sourceDirName, fileName);
+      return fileName;
     }
   }
 }
