@@ -11,7 +11,7 @@ namespace steam_game_launcher {
         if (args.Length < 3) {
           throw new ArgumentException(
             $"Expected at least 3 arguments, got {args.Length}.\n" +
-            "Run like so: steam-game-launcher.exe <steamInstallPath> <steamGameId> <gameName> <asAdmin> <extraProgramPath> <extraProgramName>\n" +
+            "Run like so: steam-game-launcher.exe <steamInstallPath> <steamGameId> <gameName> <asAdmin> <extraProgramPath> <extraProgramName> <userId> <username>\n" +
             "Where: \n" +
             "\t<steamInstallPath> is the Path to Steam installation Folder (this folder needs to contain the `userdata` folder)\n" +
             "\t<steamGameId> is the ID steam gave to the game (also works with non-steam game as steam assign the shortcut an ID)\n" +
@@ -19,6 +19,8 @@ namespace steam_game_launcher {
             "\t<asAdmin> is either \"true\" or \"false\" to determine if everything should be run as admin (this is optional) - default is true\n" +
             "\t<extraProgramPath> is the full path to a program you want to also start at the same time (this is optional) - default is none\n" +
             "\t<extraProgramName> is the name of the extra program you want ot start (this is optional, but required if the extra program path is set)\n" +
+            "\t<userId> is the Steam User Id you want to make a backup of MHR save file of\n"+
+            "\t<username> is the Steam User Name you want to make a backup of MHR save file of\n"+
             "NOTE: All Paths can be written with forward slash instead of double-backslash for simplicity"
           );
         }
@@ -29,20 +31,28 @@ namespace steam_game_launcher {
         string asAdmin = "true";
         string extraProgramPath = null;
         string extraProgramName = null;
+        string steamUserId = null;
+        string steamUserName = null;
 
         if (args.Length >= 4) {
           asAdmin = args[3];
 
-          if (args.Length == 6) {
+          if (args.Length >= 6) {
             extraProgramPath = args[4];
             extraProgramName = args[5];
+
+            if (args.Length >= 7) {
+              steamUserId = args[6];
+              steamUserName = args[7];
+            }
           }
         }
 
         bool runAsAdmin = asAdmin == "true" ? true : false;
 
-        if (gameName == "Monster Hunter Rise") {
-          BackupMhrSaveFiles(steamInstallPath, steamGameId, "116945176", "yonguelink", "G:\\Steam\\steamapps\\common\\MonsterHunterRise\\save-backups");
+        if (gameName == "Monster Hunter Rise" && steamUserId != null && steamUserName != null) {
+          Console.WriteLine("Will backup");
+          BackupMhrSaveFiles(steamInstallPath, steamGameId, steamUserId, steamUserName, "save-backups");
         }
 
         KillProcesses(gameName.ToLower());
@@ -116,13 +126,21 @@ namespace steam_game_launcher {
       Process.Start(programStartInfo);
     }
 
-    private static string BackupMhrSaveFiles(string steamInstallPath, string mhrSteamAppId, string steamUserId, string steamUsername, string backupFolderPath) {
+    private static string BackupMhrSaveFiles(string steamInstallPath, string mhrSteamAppId, string steamUserId, string steamUsername, string backupFolderName) {
       string mhrSaveFolder = Path.Combine(
         steamInstallPath,
         "userdata",
         steamUserId,
         mhrSteamAppId,
         "remote"
+      );
+
+      string backupFolderPath = Path.Combine(
+        steamInstallPath,
+        "steamapps",
+        "common",
+        "MonsterHunterRise",
+        backupFolderName
       );
 
       string backupFolderNowPath = Path.Combine(
