@@ -68,8 +68,13 @@ namespace steam_game_launcher {
         }
         
         KillProcesses(extraProgramName.ToLower());
-        StartProgram(extraProgramPath, runAsAdmin);
 
+        // If Ship of Harkinian, we must set the current directory to SoH's exe otherwise it won't find soh.otr
+        if (extraProgramName.ToLower() == "soh") {
+          Directory.SetCurrentDirectory(Path.GetDirectoryName(extraProgramPath));
+        }
+
+        StartProgram(extraProgramPath, runAsAdmin);
       } catch (Exception err) {
         Console.Write(err);
         Console.Write("\nPress Enter to continue...");
