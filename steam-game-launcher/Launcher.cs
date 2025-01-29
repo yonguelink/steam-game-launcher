@@ -29,6 +29,7 @@ namespace steam_game_launcher
             }
             catch (Exception err) {
                 Console.WriteLine($"It crashed {maxAttemps} times: {err}");
+                Console.ReadLine();
             }
         }
 
@@ -145,7 +146,8 @@ namespace steam_game_launcher
 
             var gameStartInfo = new ProcessStartInfo
             {
-                FileName = $"steam://rungameid/{steamGameId}"
+                FileName = $"steam://rungameid/{steamGameId}",
+                UseShellExecute = true
             };
             Process.Start(gameStartInfo);
         }
